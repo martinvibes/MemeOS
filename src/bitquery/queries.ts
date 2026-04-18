@@ -1,3 +1,26 @@
+export const TOKENS_CREATED_BY_DEV = `
+  query TokensCreatedByDev($dev: String!, $since: String!) {
+    EVM(network: bsc, dataset: combined) {
+      Transfers(
+        limit: { count: 50 }
+        orderBy: { descending: Block_Time }
+        where: {
+          Block: { Date: { since: $since } }
+          Transfer: { Sender: { is: "0x0000000000000000000000000000000000000000" } }
+          Transaction: { From: { is: $dev } }
+        }
+      ) {
+        Block { Time }
+        Transaction { Hash From To }
+        Transfer {
+          Amount
+          Currency { Name Symbol SmartContract }
+        }
+      }
+    }
+  }
+`
+
 export const TOP_TOKENS_BY_VOLUME = `
   query TopTokensByVolume {
     EVM(network: bsc, dataset: combined) {

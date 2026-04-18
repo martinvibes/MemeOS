@@ -1,0 +1,21 @@
+[
+  {
+    "name": "360 No Scope",
+    "symbol": "360",
+    "tokenAddress": "0x9e6388da5ddf03027fd996a13b32c0d5921f4444",
+    "txHash": "0x9a8aaab93337c170d601e78e9169021d5a70350810b4e07a97bc7e1bdb40af12",
+    "fourMemeUrl": "https://four.meme/en/token/0x9e6388da5ddf03027fd996a13b32c0d5921f4444",
+    "imageUrl": "https://image.pollinations.ai/prompt/call%20of%20duty%2C%20high%20quality%20digital%20art%2C%20token%20logo%20style%2C%20centered%20character%20on%20dark%20background%2C%20bold%20vibrant%20colors%2C%20icon%20style%2C%20no%20text?width=512&height=512&model=flux&seed=1000&nologo=true",
+    "tagline": "No Camping. Only Diamond Hands.",
+    "deployedAt": "2026-04-18T23:19:27.934Z"
+  },
+  {
+    "name": "Ratel",
+    "symbol": "RATEL",
+    "tokenAddress": "0x986ce56a309d510b8b8555bf40f5532c142c4444",
+    "txHash": "",
+    "fourMemeUrl": "https://four.meme/en/token/0x986ce56a309d510b8b8555bf40f5532c142c4444",
+    "tagline": "Too stubborn to die, too fierce to sell",
+    "deployedAt": "2026-04-18T16:00:00.000Z"
+  }
+]

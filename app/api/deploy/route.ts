@@ -3,6 +3,7 @@ import { join } from 'path'
 import { tmpdir } from 'os'
 import { randomUUID } from 'crypto'
 import { MemeOS } from '@/src/orchestrator'
+import { writeDeploy } from '@/src/storage/deploys'
 import type { AgentEvent } from '@/src/types'
 
 export const runtime = 'nodejs'
@@ -82,6 +83,18 @@ export async function POST(request: Request) {
             send({ type: 'agent-event', event })
           },
         })
+
+        // Persist deploy to global store (fire and forget)
+        writeDeploy({
+          name: deployResult.name,
+          symbol: deployResult.symbol,
+          tokenAddress: deployResult.tokenAddress,
+          txHash: deployResult.txHash,
+          fourMemeUrl: deployResult.fourMemeUrl,
+          imageUrl: (resolvedVisuals as any)?.imageUrl,
+          tagline: (narrative as any)?.taglines?.[0],
+          deployedAt: new Date().toISOString(),
+        }).catch((e) => console.error('[Deploy] Failed to persist:', e))
 
         send({ type: 'deployed', token: deployResult })
       } catch (error) {
