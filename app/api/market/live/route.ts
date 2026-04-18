@@ -1,88 +1,120 @@
-import { BitqueryClient } from '@/src/bitquery/client'
-import { BONDING_CURVE_PROGRESS, TOP_HOLDERS } from '@/src/bitquery/queries'
-import { LIVE_TRADES_SUBSCRIPTION } from '@/src/bitquery/subscriptions'
+import { getBondingCurve, getRecentTrades, getTopHolders, type TradeLog } from '@/src/bsc/rpc'
+import type { Address } from 'viem'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+const POLL_INTERVAL_MS = 5000 // Poll BSC every 5 seconds
+const HOLDERS_INTERVAL_MS = 30000 // Holders are more expensive — poll every 30s
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const token = searchParams.get('token')
+  const token = searchParams.get('token') as Address | null
 
   if (!token) {
     return new Response('Missing token parameter', { status: 400 })
   }
 
   const encoder = new TextEncoder()
-  const bitquery = new BitqueryClient(process.env.BITQUERY_API_KEY!)
+  const seenTxHashes = new Set<string>()
+  let lastBlock: bigint | undefined = undefined
 
   const stream = new ReadableStream({
-    start(controller) {
+    async start(controller) {
+      let closed = false
+
       const send = (data: Record<string, unknown>) => {
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
-      }
-
-      // Live trades via WebSocket
-      const tradeSub = bitquery.subscribe(
-        LIVE_TRADES_SUBSCRIPTION,
-        { token },
-        (data: unknown) => {
-          const trades = (data as any)?.EVM?.DEXTrades || []
-          for (const t of trades) {
-            send({
-              type: 'trade',
-              trade: {
-                buyer: t.Trade?.Buy?.Buyer || '',
-                amount: Number(t.Trade?.Buy?.Amount || 0),
-                priceUSD: Number(t.Trade?.Buy?.PriceInUSD || 0),
-                side: 'buy',
-                txHash: t.Transaction?.Hash || '',
-                timestamp: t.Block?.Time || new Date().toISOString(),
-              },
-            })
-          }
-        },
-      )
-
-      // Poll bonding curve + holders every 30s
-      const poll = async () => {
+        if (closed) return
         try {
-          const [bondingData, holdersData] = await Promise.allSettled([
-            bitquery.query(BONDING_CURVE_PROGRESS, { token }),
-            bitquery.query(TOP_HOLDERS, { token }),
-          ])
-
-          if (bondingData.status === 'fulfilled') {
-            const balance = Number(
-              (bondingData.value as any)?.EVM?.BalanceUpdates?.[0]?.balance || 0
-            )
-            const progress = 100 - (((balance - 200000000) * 100) / 800000000)
-            send({ type: 'bonding', progress: Math.max(0, Math.min(100, progress)) })
-          }
-
-          if (holdersData.status === 'fulfilled') {
-            const balances = (holdersData.value as any)?.EVM?.TransactionBalances || []
-            send({
-              type: 'holders',
-              holders: balances.map((b: any) => ({
-                address: b.TokenBalance?.Address || '',
-                balance: Number(b.TokenBalance?.Balance || 0),
-                percentage: Number(b.holding_percentage || 0),
-              })),
-            })
-          }
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
         } catch {
-          // Continue polling
+          closed = true
         }
       }
 
-      poll()
-      const pollInterval = setInterval(poll, 30_000)
+      // Initial snapshot
+      const fetchBondingAndTrades = async () => {
+        try {
+          const [bonding, tradesResult] = await Promise.all([
+            getBondingCurve(token),
+            getRecentTrades(token, lastBlock),
+          ])
 
-      request.signal.addEventListener('abort', () => {
-        tradeSub.stop()
-        clearInterval(pollInterval)
-        controller.close()
-      })
+          send({ type: 'bonding', progress: bonding.progressPercent })
+
+          // Estimate price from bonding curve progress
+          // Early tokens have very low prices; as curve fills, price rises
+          // Simple linear approximation for display purposes
+          const estimatedPrice = (bonding.progressPercent / 100) * 0.00005
+          const marketCap = estimatedPrice * 1_000_000_000
+          send({
+            type: 'price',
+            price: {
+              price: estimatedPrice,
+              marketCap,
+              volume: 0,
+              ohlc: { open: estimatedPrice, high: estimatedPrice, low: estimatedPrice, close: estimatedPrice },
+            },
+          })
+
+          // Send new trades we haven't seen yet
+          const newTrades: TradeLog[] = []
+          for (const trade of tradesResult.trades) {
+            const key = `${trade.txHash}-${trade.buyer}`
+            if (!seenTxHashes.has(key)) {
+              seenTxHashes.add(key)
+              newTrades.push(trade)
+            }
+          }
+
+          // Newest first
+          for (const trade of newTrades) {
+            send({
+              type: 'trade',
+              trade: {
+                buyer: trade.buyer,
+                amount: trade.amount,
+                priceUSD: estimatedPrice,
+                side: trade.side,
+                txHash: trade.txHash,
+                timestamp: trade.timestamp,
+              },
+            })
+          }
+
+          lastBlock = tradesResult.latestBlock + 1n
+        } catch (err) {
+          console.error('[live] fetchBondingAndTrades failed:', err)
+        }
+      }
+
+      const fetchHolders = async () => {
+        try {
+          const holders = await getTopHolders(token, 10)
+          send({ type: 'holders', holders })
+        } catch (err) {
+          console.error('[live] fetchHolders failed:', err)
+        }
+      }
+
+      // Fire initial fetches
+      await Promise.all([fetchBondingAndTrades(), fetchHolders()])
+
+      // Set up polling intervals
+      const bondingInterval = setInterval(fetchBondingAndTrades, POLL_INTERVAL_MS)
+      const holdersInterval = setInterval(fetchHolders, HOLDERS_INTERVAL_MS)
+
+      // Clean up on disconnect
+      const cleanup = () => {
+        closed = true
+        clearInterval(bondingInterval)
+        clearInterval(holdersInterval)
+        try {
+          controller.close()
+        } catch {}
+      }
+
+      request.signal.addEventListener('abort', cleanup)
     },
   })
 
