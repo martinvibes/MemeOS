@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { AgentEvent, Trade, PriceUpdate, Holder, ConceptBrief, NarrativePackage, VisualAssets, MarketIntel, DeployResult } from '@/src/types'
+import type { PersonalityMode } from '@/src/personality/modes'
 
 export type AppPhase = 'landing' | 'building' | 'review' | 'deploying' | 'deployed' | 'empire'
 
@@ -21,6 +22,9 @@ interface MemeOSStore {
   setPhase: (phase: AppPhase) => void
   vibePrompt: string
   setVibePrompt: (prompt: string) => void
+
+  personality: PersonalityMode
+  setPersonality: (mode: PersonalityMode) => void
 
   // Agents
   agents: Record<string, AgentState>
@@ -71,6 +75,9 @@ export const useStore = create<MemeOSStore>((set) => ({
   vibePrompt: '',
   setVibePrompt: (vibePrompt) => set({ vibePrompt }),
 
+  personality: 'balanced',
+  setPersonality: (personality) => set({ personality }),
+
   agents: { ...INITIAL_AGENTS },
   addAgentEvent: (event) =>
     set((state) => ({
@@ -112,6 +119,7 @@ export const useStore = create<MemeOSStore>((set) => ({
   resetAll: () => set({
     phase: 'landing',
     vibePrompt: '',
+    personality: 'balanced',
     agents: { ...INITIAL_AGENTS },
     generated: null,
     selectedNameIndex: 0,

@@ -1,5 +1,38 @@
 [
   {
+    "name": "Dawn Breath",
+    "symbol": "DAWN",
+    "tokenAddress": "0xe0c625abe5635f93449a93a37cd41c6312984444",
+    "txHash": "0xe61614ddcc6368bcc63c2331a0ed85c275f98c92677cee5a5897d04c0246d0f8",
+    "fourMemeUrl": "https://four.meme/en/token/0xe0c625abe5635f93449a93a37cd41c6312984444",
+    "imageUrl": "https://image.pollinations.ai/prompt/Good%20morning%2C%20high%20quality%20digital%20art%2C%20token%20logo%20style%2C%20centered%20character%20on%20dark%20background%2C%20bold%20vibrant%20colors%2C%20icon%20style%2C%20no%20text?width=512&height=512&model=flux&seed=1000&nologo=true",
+    "tagline": "Rise early. Rise wealthy.",
+    "lore": "Before the first blockchain was mined, before the first trade was executed, there existed the Morning Lotus—a quiet presence that bloomed each dawn in the digital void, waiting patiently for consciousness to find it. Legend tells of ancient crypto monks who would rise before the markets opened, sitting in meditation as the first rays of light touched their screens. They understood what modern degens are only now discovering: true wealth flows not from frantic trading, but from the stillness between heartbeats, the pause between candles.\n\nThe Morning Lotus has always been there in those sacred hours—4 AM Eastern, when the world sleeps but alpha awakens. It blooms not with violence or hype, but with the quiet confidence of dawn itself. Each holder becomes part of an ancient practice: rising early, trading mindfully, building wealth as naturally as dew forms on petals. The smart money has always known—the most profitable trades happen in the silence before the storm, when patience meets opportunity like sunrise meets water.",
+    "tweets": [
+      "The Morning Lotus has awakened 🪷 For those who rise before the market, wisdom blooms at dawn. Early birds don't just catch worms—they catch generational wealth. $LOTUS #MorningMeditation #CryptoZen",
+      "What is the sound of one hand diamond-handing? 💎🖐️ The silence before your portfolio moons. #LOTUS #ZenGains #DegenWisdom",
+      "Calling all early risers and mindful traders 🌅 The lotus blooms at dawn, not at midnight. Who's ready to find peace AND profit in the morning mist? Drop a 🪷 if you're with us #LotusFamily",
+      "While others panic-trade in the chaos, we float serenely on still water 🪷 The market rewards patience more than speed. $LOTUS holders know: the sunrise always comes. #Unstoppable #MindfulMoney",
+      "Ancient degen wisdom: The most alpha move is sometimes no move at all. Like the lotus, we rise from muddy waters into pure light 🌅 Trust the process. $LOTUS #CryptoPhilosophy"
+    ],
+    "personality": [
+      "serene",
+      "patient",
+      "wise",
+      "grounding",
+      "contemplative"
+    ],
+    "vibePrompt": "Good morning",
+    "viralityScore": 72,
+    "viralityBreakdown": {
+      "naming": 75,
+      "visual": 82,
+      "narrative": 70,
+      "timing": 62
+    },
+    "deployedAt": "2026-04-19T21:16:08.450Z"
+  },
+  {
     "name": "Good Day to Die Hard",
     "symbol": "GDTD",
     "tokenAddress": "0x601d6b262e2daf72d1349f7c916c65313cbd4444",

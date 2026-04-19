@@ -1,6 +1,7 @@
 import { BaseAgent } from './base'
 import { generateImage, type GeneratedImage } from '../image/generator'
 import type { AgentEvent, ConceptBrief, NarrativePackage, VisualAssets } from '../types'
+import type { PersonalityMode } from '../personality/modes'
 
 const SYSTEM_PROMPT = `You are the Visual Director of MemeOS, an autonomous meme coin operating system.
 
@@ -42,8 +43,8 @@ Output ONLY valid JSON:
 }`
 
 export class VisualDirector extends BaseAgent {
-  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void) {
-    super(apiKey, 'visual-director', onUpdate)
+  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void, personality: PersonalityMode = 'balanced') {
+    super(apiKey, 'visual-director', onUpdate, personality)
   }
 
   async generateVisuals(

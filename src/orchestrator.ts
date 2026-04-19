@@ -8,6 +8,7 @@ import type {
   LaunchOptions, AgentEvent, ConceptBrief, MarketIntel,
   NarrativePackage, VisualAssets, DeployResult,
 } from './types'
+import type { PersonalityMode } from './personality/modes'
 
 const MAX_CRITIQUE_ROUNDS = 2
 const CRITIQUE_THRESHOLD = 7
@@ -48,7 +49,7 @@ export class MemeOS {
     this.bitqueryKey = config.bitqueryKey
   }
 
-  async generate(vibePrompt: string, onAgentUpdate?: (event: AgentEvent) => void): Promise<GenerateResult> {
+  async generate(vibePrompt: string, onAgentUpdate?: (event: AgentEvent) => void, personality: PersonalityMode = 'balanced'): Promise<GenerateResult> {
     // === Start BOTH preliminary images IMMEDIATELY from the vibe prompt ===
     // Runs in parallel with ALL agents so both are ready by review time
     onAgentUpdate?.({
@@ -83,6 +84,7 @@ export class MemeOS {
       this.anthropicKey,
       this.bitqueryKey,
       onAgentUpdate,
+      personality,
     )
     const marketIntel = await marketAnalyst.run()
 
@@ -90,6 +92,7 @@ export class MemeOS {
     const conceptArchitect = new ConceptArchitect(
       this.anthropicKey,
       onAgentUpdate,
+      personality,
     )
     const concept = await conceptArchitect.run({ vibePrompt, marketIntel })
 
@@ -97,10 +100,12 @@ export class MemeOS {
     const visualDirector = new VisualDirector(
       this.anthropicKey,
       onAgentUpdate,
+      personality,
     )
     const narrativeDesigner = new NarrativeDesigner(
       this.anthropicKey,
       onAgentUpdate,
+      personality,
     )
 
     // Wait for both preliminary images to be ready

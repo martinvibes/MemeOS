@@ -2,6 +2,7 @@ import { BaseAgent } from './base'
 import { BitqueryClient } from '../bitquery/client'
 import { TOP_TOKENS_BY_VOLUME, RECENT_TOKEN_LAUNCHES, BONDING_CURVE_LEADERS } from '../bitquery/queries'
 import type { AgentEvent, MarketIntel } from '../types'
+import type { PersonalityMode } from '../personality/modes'
 
 const SYSTEM_PROMPT = `You are the Market Analyst of MemeOS, an autonomous meme coin operating system.
 
@@ -28,8 +29,9 @@ export class MarketAnalyst extends BaseAgent {
     apiKey: string,
     bitqueryKey: string,
     onUpdate?: (event: AgentEvent) => void,
+    personality: PersonalityMode = 'balanced',
   ) {
-    super(apiKey, 'market-analyst', onUpdate)
+    super(apiKey, 'market-analyst', onUpdate, personality)
     this.bitquery = new BitqueryClient(bitqueryKey)
   }
 

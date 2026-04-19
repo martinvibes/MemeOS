@@ -10,6 +10,7 @@ import { DeployStatus } from '@/components/dashboard/deploy-status'
 import { ReviewPanel } from '@/components/dashboard/review-panel'
 import { PhaseIndicator } from '@/components/dashboard/phase-indicator'
 import { EmpireMode } from '@/components/empire/empire-mode'
+import { VoiceToggle } from '@/components/ui/voice-toggle'
 import { useStore } from '@/lib/store'
 import { useSwarmGenerate } from '@/lib/hooks'
 
@@ -76,6 +77,7 @@ export default function DashboardPage() {
 
           {/* Right: phase badge */}
           <div className="flex items-center gap-2">
+            <VoiceToggle />
             <span className={`font-mono text-xs px-2 py-1 rounded border ${
               phase === 'building' ? 'text-memeos-amber border-memeos-amber/30 bg-memeos-amber/10' :
               phase === 'review' ? 'text-memeos-violet border-memeos-violet/30 bg-memeos-violet/10' :

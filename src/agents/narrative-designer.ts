@@ -1,5 +1,6 @@
 import { BaseAgent } from './base'
 import type { AgentEvent, ConceptBrief, MarketIntel, NarrativePackage } from '../types'
+import type { PersonalityMode } from '../personality/modes'
 
 const SYSTEM_PROMPT = `You are the Narrative Designer of MemeOS, an autonomous meme coin operating system.
 
@@ -34,8 +35,8 @@ interface NarrativeInput {
 }
 
 export class NarrativeDesigner extends BaseAgent {
-  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void) {
-    super(apiKey, 'narrative-designer', onUpdate)
+  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void, personality: PersonalityMode = 'balanced') {
+    super(apiKey, 'narrative-designer', onUpdate, personality)
   }
 
   async run(input: NarrativeInput): Promise<NarrativePackage> {

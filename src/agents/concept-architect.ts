@@ -1,5 +1,6 @@
 import { BaseAgent } from './base'
 import type { AgentEvent, ConceptBrief, MarketIntel } from '../types'
+import type { PersonalityMode } from '../personality/modes'
 
 const SYSTEM_PROMPT = `You are the Concept Architect of MemeOS, an autonomous meme coin operating system.
 
@@ -33,8 +34,8 @@ interface ConceptInput {
 }
 
 export class ConceptArchitect extends BaseAgent {
-  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void) {
-    super(apiKey, 'concept-architect', onUpdate)
+  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void, personality: PersonalityMode = 'balanced') {
+    super(apiKey, 'concept-architect', onUpdate, personality)
   }
 
   async run(input: ConceptInput): Promise<ConceptBrief> {

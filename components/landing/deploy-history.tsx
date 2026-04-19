@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { History, ExternalLink, Clock, Globe, Crown, Shuffle, Flame } from 'lucide-react'
+import { History, ExternalLink, Clock, Globe, Crown, Shuffle, Flame, Trophy, ChevronRight } from 'lucide-react'
 import { GlassPanel } from '@/components/ui/glass-panel'
 import { formatAddress, timeAgo } from '@/lib/utils'
 
@@ -189,6 +189,17 @@ export function DeployHistory() {
             </a>
           </div>
         )}
+
+        <div className="mt-3 pt-3 border-t border-memeos-border flex items-center justify-center">
+          <Link
+            href="/leaderboard"
+            className="group flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-memeos-text-dim hover:text-memeos-cyan transition-colors"
+          >
+            <Trophy className="w-3 h-3 text-memeos-amber group-hover:text-memeos-amber" />
+            View full leaderboard
+            <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
       </GlassPanel>
     </div>
   )

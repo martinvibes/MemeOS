@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { AgentEvent, AgentName } from '../types'
+import { PERSONALITY_MODES, type PersonalityMode } from '../personality/modes'
 
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 2000
@@ -11,20 +12,23 @@ function sleep(ms: number) {
 export abstract class BaseAgent {
   protected client: Anthropic
   protected name: AgentName
+  protected personality: PersonalityMode
   private onUpdate?: (event: AgentEvent) => void
 
   constructor(
     apiKey: string,
     name: AgentName,
     onUpdate?: (event: AgentEvent) => void,
+    personality: PersonalityMode = 'balanced',
   ) {
     this.client = new Anthropic({
       apiKey,
-      timeout: 60_000, // 60s timeout
-      maxRetries: 2, // SDK-level retries for transient errors
+      timeout: 60_000,
+      maxRetries: 2,
     })
     this.name = name
     this.onUpdate = onUpdate
+    this.personality = personality
   }
 
   protected emit(status: AgentEvent['status'], message: string, data?: unknown) {
@@ -43,6 +47,12 @@ export abstract class BaseAgent {
   ): Promise<string> {
     this.emit('running', 'Thinking...')
 
+    // Append personality mode suffix to the system prompt if not balanced
+    const modeInfo = PERSONALITY_MODES[this.personality]
+    const augmentedSystemPrompt = modeInfo.promptSuffix
+      ? `${systemPrompt}\n\n${modeInfo.promptSuffix}`
+      : systemPrompt
+
     let lastError: Error | null = null
 
     // Outer retry loop for connection errors that bypass SDK retries
@@ -53,7 +63,7 @@ export abstract class BaseAgent {
         const stream = this.client.messages.stream({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 4096,
-          system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+          system: [{ type: 'text', text: augmentedSystemPrompt, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userPrompt }],
         })
 

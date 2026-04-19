@@ -5,7 +5,7 @@ export const runtime = 'nodejs'
 export const maxDuration = 300
 
 export async function POST(request: Request) {
-  const { vibePrompt } = await request.json()
+  const { vibePrompt, personality } = await request.json()
 
   if (!vibePrompt || typeof vibePrompt !== 'string') {
     return new Response(JSON.stringify({ error: 'vibePrompt is required' }), {
@@ -31,9 +31,13 @@ export async function POST(request: Request) {
         })
 
         // Only generate — don't deploy. User reviews first.
-        const result = await os.generate(vibePrompt, (event: AgentEvent) => {
-          send({ type: 'agent-event', event })
-        })
+        const result = await os.generate(
+          vibePrompt,
+          (event: AgentEvent) => {
+            send({ type: 'agent-event', event })
+          },
+          personality,
+        )
 
         send({ type: 'generated', result })
       } catch (error) {

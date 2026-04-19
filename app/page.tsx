@@ -4,10 +4,12 @@ import { Suspense, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { BookOpen, Terminal } from 'lucide-react'
+import { BookOpen, Terminal, Trophy } from 'lucide-react'
 import { Hero } from '@/components/landing/hero'
 import { VibeInput } from '@/components/landing/vibe-input'
 import { DeployHistory } from '@/components/landing/deploy-history'
+import { PersonalityPicker } from '@/components/landing/personality-picker'
+import { VoiceToggle } from '@/components/ui/voice-toggle'
 import { useStore } from '@/lib/store'
 
 const Hyperspeed = dynamic(() => import('@/components/ui/Hyperspeed'), { ssr: false })
@@ -86,13 +88,23 @@ export default function Home() {
               v1.0
             </span>
           </div>
-          <Link
-            href="/how-it-works"
-            className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded-lg border border-memeos-cyan/40 bg-memeos-cyan/10 text-memeos-cyan hover:bg-memeos-cyan/20 hover:shadow-glow-cyan transition-all"
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            How it works
-          </Link>
+          <div className="flex items-center gap-2">
+            <VoiceToggle />
+            <Link
+              href="/leaderboard"
+              className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded-lg border border-memeos-cyan/40 bg-memeos-cyan/10 text-memeos-cyan hover:bg-memeos-cyan/20 hover:shadow-glow-cyan transition-all"
+            >
+              <Trophy className="w-3.5 h-3.5" />
+              Leaderboard
+            </Link>
+            <Link
+              href="/how-it-works"
+              className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded-lg border border-memeos-cyan/40 bg-memeos-cyan/10 text-memeos-cyan hover:bg-memeos-cyan/20 hover:shadow-glow-cyan transition-all"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              How it works
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -101,6 +113,7 @@ export default function Home() {
         <Suspense fallback={<VibeInput onSubmit={handleSubmit} />}>
           <VibeInputWithRemix onSubmit={handleSubmit} />
         </Suspense>
+        <PersonalityPicker />
         <DeployHistory />
 
         <p className="text-center font-mono text-[10px] text-memeos-text-muted mt-8">

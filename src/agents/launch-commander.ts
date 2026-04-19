@@ -4,6 +4,7 @@ import type {
   AgentEvent, ConceptBrief, NarrativePackage, VisualAssets,
   DeployResult, LaunchOptions,
 } from '../types'
+import type { PersonalityMode } from '../personality/modes'
 
 interface LaunchInput {
   concept: ConceptBrief
@@ -14,8 +15,8 @@ interface LaunchInput {
 }
 
 export class LaunchCommander extends BaseAgent {
-  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void) {
-    super(apiKey, 'launch-commander', onUpdate)
+  constructor(apiKey: string, onUpdate?: (event: AgentEvent) => void, personality: PersonalityMode = 'balanced') {
+    super(apiKey, 'launch-commander', onUpdate, personality)
   }
 
   async run(input: LaunchInput): Promise<DeployResult> {
