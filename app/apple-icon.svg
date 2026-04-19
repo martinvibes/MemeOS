@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a0e17"/>
+      <stop offset="1" stop-color="#151d2e"/>
+    </linearGradient>
+    <linearGradient id="fg" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#00e5ff"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="38" fill="url(#bg)"/>
+  <rect x="14" y="14" width="152" height="152" rx="30" fill="none" stroke="url(#fg)" stroke-width="3" stroke-opacity="0.4"/>
+  <g fill="url(#fg)">
+    <rect x="40" y="52" width="14" height="80"/>
+    <rect x="126" y="52" width="14" height="80"/>
+    <polygon points="40,52 54,52 90,98 126,52 140,52 140,66 90,127 40,66"/>
+  </g>
+</svg>

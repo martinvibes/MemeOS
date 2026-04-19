@@ -23,6 +23,7 @@ interface GlobalToken {
 export function DeployHistory() {
   const router = useRouter()
   const [tokens, setTokens] = useState<GlobalToken[]>([])
+  const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [devAddress, setDevAddress] = useState<string>('')
 
@@ -39,7 +40,9 @@ export function DeployHistory() {
         const res = await fetch('/api/history/global')
         const data = await res.json()
         if (cancelled) return
-        setTokens((data.tokens || []).slice(0, 8))
+        const all = data.tokens || []
+        setTokens(all.slice(0, 4))
+        setTotalCount(all.length)
         setDevAddress(data.devAddress || '')
       } catch {
         // silent fail — section just won't show
@@ -77,11 +80,11 @@ export function DeployHistory() {
             </span>
           </div>
           <span className="font-mono text-[10px] text-memeos-text-muted">
-            {tokens.length} token{tokens.length !== 1 ? 's' : ''} on BSC
+            {totalCount} empire{totalCount !== 1 ? 's' : ''} on BSC
           </span>
         </div>
 
-        <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+        <div className="space-y-2 pr-1">
           {tokens.map((token, i) => (
             <div
               key={`${token.tokenAddress}-${i}`}
@@ -190,16 +193,56 @@ export function DeployHistory() {
           </div>
         )}
 
-        <div className="mt-3 pt-3 border-t border-memeos-border flex items-center justify-center">
+        {totalCount > tokens.length && (
           <Link
             href="/leaderboard"
-            className="group flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-memeos-text-dim hover:text-memeos-cyan transition-colors"
+            className="group mt-3 flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-memeos-amber/5 via-memeos-cyan/5 to-memeos-violet/5 border border-memeos-border/50 hover:border-memeos-amber/40 hover:shadow-[0_0_18px_rgba(245,158,11,0.12)] transition-all"
           >
-            <Trophy className="w-3 h-3 text-memeos-amber group-hover:text-memeos-amber" />
-            View full leaderboard
-            <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+            {/* Stacked circles showing hidden empires */}
+            <div className="flex -space-x-2 flex-shrink-0">
+              {[...Array(Math.min(3, totalCount - tokens.length))].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-7 h-7 rounded-full bg-memeos-surface border-2 border-memeos-bg flex items-center justify-center"
+                  style={{ zIndex: 3 - i }}
+                >
+                  <Trophy className={`w-3 h-3 ${
+                    i === 0 ? 'text-memeos-amber' :
+                    i === 1 ? 'text-memeos-cyan' :
+                    'text-memeos-violet'
+                  }`} />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="font-mono text-xs text-memeos-text font-medium">
+                <span className="text-memeos-amber">+{totalCount - tokens.length}</span> more empire{totalCount - tokens.length !== 1 ? 's' : ''} on the leaderboard
+              </div>
+              <div className="font-mono text-[10px] text-memeos-text-muted mt-0.5">
+                See the full rankings by viral score, bonding curve, and more
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1 text-memeos-amber font-mono text-[10px] uppercase tracking-wider group-hover:translate-x-0.5 transition-transform flex-shrink-0">
+              Hall of Fame
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
           </Link>
-        </div>
+        )}
+
+        {totalCount > 0 && totalCount <= tokens.length && (
+          <Link
+            href="/leaderboard"
+            className="group mt-3 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-memeos-border/50 hover:border-memeos-amber/40 hover:bg-memeos-amber/5 transition-all"
+          >
+            <Trophy className="w-3 h-3 text-memeos-amber" />
+            <span className="font-mono text-[10px] uppercase tracking-wider text-memeos-text-dim group-hover:text-memeos-amber transition-colors">
+              View Hall of Fame
+            </span>
+            <ChevronRight className="w-3 h-3 text-memeos-text-muted group-hover:text-memeos-amber transition-colors" />
+          </Link>
+        )}
       </GlassPanel>
     </div>
   )
