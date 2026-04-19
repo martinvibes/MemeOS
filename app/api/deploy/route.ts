@@ -32,7 +32,10 @@ async function ensureLocalImage(visuals: any): Promise<any> {
 }
 
 export async function POST(request: Request) {
-  const { concept, narrative, visuals, preSale, twitterUrl, telegramUrl, webUrl } = await request.json()
+  const {
+    concept, narrative, visuals, preSale, twitterUrl, telegramUrl, webUrl,
+    vibePrompt, virality,
+  } = await request.json()
 
   if (!concept || !narrative || !visuals) {
     return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -93,6 +96,12 @@ export async function POST(request: Request) {
           fourMemeUrl: deployResult.fourMemeUrl,
           imageUrl: (resolvedVisuals as any)?.imageUrl,
           tagline: (narrative as any)?.taglines?.[0],
+          lore: (narrative as any)?.lore,
+          tweets: (narrative as any)?.tweets,
+          personality: (concept as any)?.personality,
+          vibePrompt,
+          viralityScore: virality?.score,
+          viralityBreakdown: virality?.breakdown,
           deployedAt: new Date().toISOString(),
         }).catch((e) => console.error('[Deploy] Failed to persist:', e))
 

@@ -86,6 +86,13 @@ export function useDeployToken() {
     concept: unknown
     narrative: unknown
     visuals: unknown
+    vibePrompt?: string
+    virality?: {
+      score: number
+      breakdown: { naming: number; visual: number; narrative: number; timing: number }
+      verdict: string
+      riskFlags: string[]
+    } | null
   }) => {
     setError(null)
     setPhase('deploying')

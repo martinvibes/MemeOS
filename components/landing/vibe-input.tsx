@@ -2,12 +2,15 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { Shuffle } from 'lucide-react'
 import { GlowButton } from '@/components/ui/glow-button'
 import { GlassPanel } from '@/components/ui/glass-panel'
 
 interface VibeInputProps {
   onSubmit: (prompt: string) => void
   loading?: boolean
+  initialValue?: string
+  isRemix?: boolean
 }
 
 const PLACEHOLDER_VIBES = [
@@ -17,8 +20,8 @@ const PLACEHOLDER_VIBES = [
   'cosmic doge philosopher, existential memes for enlightened degens...',
 ]
 
-export function VibeInput({ onSubmit, loading }: VibeInputProps) {
-  const [prompt, setPrompt] = useState('')
+export function VibeInput({ onSubmit, loading, initialValue, isRemix }: VibeInputProps) {
+  const [prompt, setPrompt] = useState(initialValue || '')
   const [placeholderIndex, setPlaceholderIndex] = useState(0)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -30,7 +33,17 @@ export function VibeInput({ onSubmit, loading }: VibeInputProps) {
   }, [])
 
   useEffect(() => {
+    if (initialValue) {
+      setPrompt(initialValue)
+    }
+  }, [initialValue])
+
+  useEffect(() => {
     textareaRef.current?.focus()
+    textareaRef.current?.setSelectionRange(
+      textareaRef.current.value.length,
+      textareaRef.current.value.length
+    )
   }, [])
 
   const handleSubmit = () => {
@@ -48,6 +61,14 @@ export function VibeInput({ onSubmit, loading }: VibeInputProps) {
     >
       <GlassPanel glow="cyan" header="VIBE TERMINAL">
         <div className="space-y-4">
+          {isRemix && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-memeos-violet/10 border border-memeos-violet/30">
+              <Shuffle className="w-3 h-3 text-memeos-violet" />
+              <span className="font-mono text-[10px] text-memeos-violet uppercase tracking-wider">
+                Remix Mode — based on existing empire
+              </span>
+            </div>
+          )}
           <div className="flex items-start gap-2">
             <span className="font-mono text-memeos-cyan text-sm mt-1 select-none">{'>'}</span>
             <textarea

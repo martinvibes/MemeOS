@@ -1,9 +1,9 @@
 'use client'
 
-import { useMemo } from 'react'
+import { Suspense, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { BookOpen, Terminal } from 'lucide-react'
 import { Hero } from '@/components/landing/hero'
 import { VibeInput } from '@/components/landing/vibe-input'
@@ -11,6 +11,12 @@ import { DeployHistory } from '@/components/landing/deploy-history'
 import { useStore } from '@/lib/store'
 
 const Hyperspeed = dynamic(() => import('@/components/ui/Hyperspeed'), { ssr: false })
+
+function VibeInputWithRemix({ onSubmit }: { onSubmit: (p: string) => void }) {
+  const searchParams = useSearchParams()
+  const remixSeed = searchParams.get('remix') || ''
+  return <VibeInput onSubmit={onSubmit} initialValue={remixSeed} isRemix={!!remixSeed} />
+}
 
 export default function Home() {
   const router = useRouter()
@@ -92,7 +98,9 @@ export default function Home() {
 
       <div className="relative z-10 w-full max-w-3xl">
         <Hero />
-        <VibeInput onSubmit={handleSubmit} />
+        <Suspense fallback={<VibeInput onSubmit={handleSubmit} />}>
+          <VibeInputWithRemix onSubmit={handleSubmit} />
+        </Suspense>
         <DeployHistory />
 
         <p className="text-center font-mono text-[10px] text-memeos-text-muted mt-8">

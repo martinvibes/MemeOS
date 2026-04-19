@@ -1,6 +1,13 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { AgentEvent, AgentName } from '../types'
 
+const MAX_RETRIES = 3
+const RETRY_DELAY_MS = 2000
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 export abstract class BaseAgent {
   protected client: Anthropic
   protected name: AgentName
@@ -11,7 +18,11 @@ export abstract class BaseAgent {
     name: AgentName,
     onUpdate?: (event: AgentEvent) => void,
   ) {
-    this.client = new Anthropic({ apiKey })
+    this.client = new Anthropic({
+      apiKey,
+      timeout: 60_000, // 60s timeout
+      maxRetries: 2, // SDK-level retries for transient errors
+    })
     this.name = name
     this.onUpdate = onUpdate
   }
@@ -32,27 +43,58 @@ export abstract class BaseAgent {
   ): Promise<string> {
     this.emit('running', 'Thinking...')
 
-    let fullResponse = ''
+    let lastError: Error | null = null
 
-    const stream = this.client.messages.stream({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
-      system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userPrompt }],
-    })
+    // Outer retry loop for connection errors that bypass SDK retries
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        let fullResponse = ''
 
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-        fullResponse += event.delta.text
-        if (fullResponse.length % 100 < event.delta.text.length) {
-          const lastLine = fullResponse.split('\n').pop() || ''
-          this.emit('running', lastLine.slice(0, 120))
+        const stream = this.client.messages.stream({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 4096,
+          system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+          messages: [{ role: 'user', content: userPrompt }],
+        })
+
+        for await (const event of stream) {
+          if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+            fullResponse += event.delta.text
+            if (fullResponse.length % 100 < event.delta.text.length) {
+              const lastLine = fullResponse.split('\n').pop() || ''
+              this.emit('running', lastLine.slice(0, 120))
+            }
+          }
         }
+
+        this.emit('completed', 'Done')
+        return fullResponse
+      } catch (err) {
+        lastError = err as Error
+        const msg = lastError.message || ''
+        const isRetryable =
+          msg.includes('Connection error') ||
+          msg.includes('ECONNRESET') ||
+          msg.includes('ETIMEDOUT') ||
+          msg.includes('fetch failed') ||
+          msg.includes('socket hang up') ||
+          msg.includes('network') ||
+          msg.includes('503') ||
+          msg.includes('529') || // overloaded
+          msg.includes('502')
+
+        if (!isRetryable || attempt === MAX_RETRIES - 1) {
+          break
+        }
+
+        const waitMs = RETRY_DELAY_MS * Math.pow(2, attempt) // exponential backoff
+        this.emit('running', `Retry ${attempt + 1}/${MAX_RETRIES} in ${waitMs / 1000}s...`)
+        await sleep(waitMs)
       }
     }
 
-    this.emit('completed', 'Done')
-    return fullResponse
+    this.emit('error', `Failed after ${MAX_RETRIES} retries: ${lastError?.message || 'Unknown error'}`)
+    throw lastError || new Error('chat() failed')
   }
 
   abstract run(input: unknown): Promise<unknown>

@@ -9,6 +9,17 @@ export interface StoredDeploy {
   fourMemeUrl: string
   imageUrl?: string
   tagline?: string
+  lore?: string
+  vibePrompt?: string          // original user vibe — used for remix
+  tweets?: string[]
+  personality?: string[]
+  viralityScore?: number        // 0-100 score from pre-launch analysis
+  viralityBreakdown?: {
+    naming: number
+    visual: number
+    narrative: number
+    timing: number
+  }
   deployedAt: string
 }
 
@@ -21,6 +32,13 @@ async function ensureDataDir() {
   } catch {
     // ignore
   }
+}
+
+export async function findDeploy(tokenAddress: string): Promise<StoredDeploy | null> {
+  const all = await readDeploys()
+  return all.find(
+    (d) => d.tokenAddress.toLowerCase() === tokenAddress.toLowerCase()
+  ) || null
 }
 
 export async function readDeploys(): Promise<StoredDeploy[]> {

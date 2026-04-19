@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Check,
@@ -19,6 +19,14 @@ import { GlassPanel } from '@/components/ui/glass-panel'
 import { GlowButton } from '@/components/ui/glow-button'
 import { useStore } from '@/lib/store'
 import { useDeployToken } from '@/lib/hooks'
+import { ViralityScore } from '@/components/dashboard/virality-score'
+
+interface ViralityData {
+  score: number
+  breakdown: { naming: number; visual: number; narrative: number; timing: number }
+  verdict: string
+  riskFlags: string[]
+}
 
 // ─── Animation Variants ────────────────────────────────────────────────────
 
@@ -624,6 +632,7 @@ function SelectedNameBadge({
 
 export function ReviewPanel() {
   const { generated, selectedNameIndex, phase } = useStore()
+  const vibePrompt = useStore((s) => s.vibePrompt)
   const { deploy } = useDeployToken()
 
   // Editable state
@@ -635,6 +644,30 @@ export function ReviewPanel() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null)
   const [uploadedLocalPath, setUploadedLocalPath] = useState<string | null>(null)
   const [initialized, setInitialized] = useState(false)
+
+  // Virality analysis
+  const [virality, setVirality] = useState<ViralityData | null>(null)
+  const [viralityLoading, setViralityLoading] = useState(true)
+
+  useEffect(() => {
+    if (!generated) return
+    setViralityLoading(true)
+    fetch('/api/virality', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        concept: generated.concept,
+        narrative: generated.narrative,
+        market: generated.market,
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setVirality(data)
+        setViralityLoading(false)
+      })
+      .catch(() => setViralityLoading(false))
+  }, [generated])
 
   // Initialize editable state from generated data
   if (generated && !initialized) {
@@ -701,7 +734,7 @@ export function ReviewPanel() {
       }
     }
 
-    deploy({ concept, narrative, visuals })
+    deploy({ concept, narrative, visuals, vibePrompt, virality })
   }
 
   const handleShareToX = () => {
@@ -739,6 +772,15 @@ export function ReviewPanel() {
           customTicker={customTicker}
           setCustomTicker={setCustomTicker}
         />
+        <motion.div variants={sectionVariants}>
+          <ViralityScore
+            score={virality?.score ?? 0}
+            breakdown={virality?.breakdown ?? { naming: 0, visual: 0, narrative: 0, timing: 0 }}
+            verdict={virality?.verdict ?? ''}
+            riskFlags={virality?.riskFlags ?? []}
+            loading={viralityLoading || !virality}
+          />
+        </motion.div>
         <CharacterArtSection
           selectedImageIndex={selectedImageIndex}
           setSelectedImageIndex={setSelectedImageIndex}

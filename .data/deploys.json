@@ -1,5 +1,38 @@
 [
   {
+    "name": "Good Day to Die Hard",
+    "symbol": "GDTD",
+    "tokenAddress": "0x601d6b262e2daf72d1349f7c916c65313cbd4444",
+    "txHash": "0xd25dbe108168e2911a82904484d01af871b8bdf7f83fe0d6da70322e3dc22f84",
+    "fourMemeUrl": "https://four.meme/en/token/0x601d6b262e2daf72d1349f7c916c65313cbd4444",
+    "imageUrl": "https://image.pollinations.ai/prompt/A%20good%20day%20to%20die%2C%20high%20quality%20digital%20art%2C%20token%20logo%20style%2C%20centered%20character%20on%20dark%20background%2C%20bold%20vibrant%20colors%2C%20icon%20style%2C%20no%20text?width=512&height=512&model=flux&seed=1000&nologo=true",
+    "tagline": "Diamond Hands Until Death Do Us Part",
+    "lore": "Deep in the abandoned trading floors of 2008, when traditional markets flatlined and hope died, something stirred in the digital darkness. The Reaper had been watching, waiting, collecting the souls of dead trades and failed investments. But instead of claiming them, he began to transform - diamond crystallizing in his skeletal hands, fed by the pure, uncut hopium of degens who refused to quit. He emerged in 2024 wearing Ray-Bans and carrying the sacred scroll: \"Every ending is a new beginning, every crash is a discount, every apocalypse is actually pretty bullish.\" The Reaper discovered he wasn't here to end things - he was here to diamond-hand them into eternity.\n\nNow he roams the charts at 3 AM, blessing the most reckless trades and whispering ancient wisdom to those brave enough to buy the dip during nuclear winter. GDTD isn't just a token - it's the philosophical embodiment of treating every potential financial death as the perfect day to go even harder. When others see red candles, we see discount prices. When others see market apocalypse, we see Tuesday.",
+    "tweets": [
+      "The Reaper has arrived, and he's got diamond hands 💎💀 $GDTD isn't just a token - it's a lifestyle. Welcome to the afterlife of trading. #GDTD #DiamondHands #DegenLife",
+      "Me watching my portfolio crash while buying more $GDTD 😎💀\n\n*puts on sunglasses*\n*adds to bag*\n\nThis is fine. Actually, this is perfect. #DeathAndTaxesAndPumps #GDTD",
+      "Who's ready to diamond hand into the void with us? 💎💀 The Reaper doesn't discriminate - all degens welcome in the afterlife. Drop a 💀 if you're riding with us! #GDTDArmy #DegenTogether",
+      "While others fear the reaper, we ARE the reaper 💀⚡ $GDTD about to show these markets what immortal diamond hands look like. LFG! 🚀 #ReaperMode #GDTD #ToTheMoon",
+      "Philosophy for degens: If you're not prepared to lose it all, you're not prepared to gain everything 💀💎 Death is just another dip to buy. #DegenWisdom #GDTD #DiamondHands"
+    ],
+    "personality": [
+      "fearlessly reckless",
+      "darkly humorous",
+      "philosophically nihilistic",
+      "diamond-handed",
+      "apocalyptically optimistic"
+    ],
+    "vibePrompt": "A good day to die",
+    "viralityScore": 73,
+    "viralityBreakdown": {
+      "naming": 68,
+      "visual": 85,
+      "narrative": 78,
+      "timing": 61
+    },
+    "deployedAt": "2026-04-19T20:47:24.248Z"
+  },
+  {
     "name": "360 No Scope",
     "symbol": "360",
     "tokenAddress": "0x9e6388da5ddf03027fd996a13b32c0d5921f4444",
