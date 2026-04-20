@@ -219,8 +219,13 @@ const sub = client.subscribe(LIVE_TRADES_SUBSCRIPTION, { token: '0x...' }, (even
 - Optional: Bitquery access token (free tier) for market intelligence
 - Optional: Upstash Redis for persistent storage
 
+## Links
+
+- **Main repo:** [github.com/martinvibes/MemeOS](https://github.com/martinvibes/MemeOS)
+- **Live demo:** [meme-oss.vercel.app](https://meme-oss.vercel.app)
+- **npm:** [npmjs.com/package/memeos-sdk](https://www.npmjs.com/package/memeos-sdk)
+- **Hackathon:** [Four.Meme AI Sprint](https://dorahacks.io/hackathon/fourmemeaisprint)
+
 ## License
 
-MIT
-
-Part of the [MemeOS](https://github.com/martinvibes/memeos) project. Built for the Four.Meme AI Sprint Hackathon, April 2026.
+MIT — Built for the Four.Meme AI Sprint Hackathon, April 2026.

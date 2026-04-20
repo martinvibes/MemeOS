@@ -1,17 +1,30 @@
 {
   "name": "memeos-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The autonomous meme coin operating system. Launch real tokens on BSC via four.meme from a single vibe prompt.",
   "keywords": [
     "memeos",
     "meme-coin",
     "four.meme",
     "bsc",
+    "bnb-chain",
     "ai-agents",
     "bitquery",
-    "claude"
+    "claude",
+    "anthropic",
+    "viem"
   ],
+  "author": "martinvibes",
   "license": "MIT",
+  "homepage": "https://github.com/martinvibes/MemeOS#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martinvibes/MemeOS.git",
+    "directory": "packages/memeos-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/martinvibes/MemeOS/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

@@ -19,7 +19,16 @@ import {
   Sparkles,
   Check,
   ChevronRight,
+  Package,
 } from 'lucide-react'
+
+function Github({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.28-.01-1.04-.02-2.04-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.47 5.93.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.83.58A12 12 0 0 0 24 12.5C24 5.87 18.63.5 12 .5z"/>
+    </svg>
+  )
+}
 
 // ----- Data -----
 
@@ -551,6 +560,112 @@ export default function HowItWorksPage() {
             )
           })}
         </div>
+      </Section>
+
+      {/* === SDK section === */}
+      <Section
+        eyebrow="04.5"
+        title="Also ships as an SDK"
+        subtitle="The same engine powering this site, published to npm. One install and one function call — every developer can launch real tokens on BSC."
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5 }}
+          className="glass-panel holo-border p-6 sm:p-8"
+        >
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-5 pb-4 border-b border-memeos-border">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-md bg-memeos-cyan/10 border border-memeos-cyan/30 flex items-center justify-center">
+                <Package className="w-4 h-4 text-memeos-cyan" />
+              </div>
+              <div>
+                <div className="font-mono text-sm text-memeos-text font-semibold">memeos-sdk</div>
+                <div className="font-mono text-[10px] text-memeos-text-muted">v0.1.1 · MIT · Published on npm</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <a
+                href="https://www.npmjs.com/package/memeos-sdk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-md border border-memeos-cyan/40 bg-memeos-cyan/10 text-memeos-cyan hover:bg-memeos-cyan/20 transition-all"
+              >
+                <Package className="w-3 h-3" />
+                npm
+              </a>
+              <a
+                href="https://github.com/martinvibes/MemeOS"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-md border border-memeos-violet/40 bg-memeos-violet/10 text-memeos-violet hover:bg-memeos-violet/20 transition-all"
+              >
+                <Github className="w-3 h-3" />
+                GitHub
+              </a>
+            </div>
+          </div>
+
+          <p className="text-memeos-text-dim text-sm leading-relaxed mb-5">
+            The entire engine powering this site — agents, orchestrator, critique loop, and on-chain deployment — is published as an npm package. Embed the full MemeOS pipeline in any app with a single function call.
+          </p>
+
+          <pre className="bg-memeos-bg border border-memeos-border rounded-md p-4 font-mono text-[12px] leading-relaxed overflow-x-auto mb-4">
+            <code className="text-memeos-text-dim">
+              <span className="text-memeos-text-muted">$ </span>
+              <span className="text-memeos-emerald">npm install memeos-sdk</span>
+              {'\n\n'}
+              <span className="text-memeos-violet">import</span>{' '}
+              <span className="text-memeos-text">{'{ MemeOS }'}</span>{' '}
+              <span className="text-memeos-violet">from</span>{' '}
+              <span className="text-memeos-amber">{"'memeos-sdk'"}</span>
+              {'\n\n'}
+              <span className="text-memeos-violet">const</span>{' '}
+              <span className="text-memeos-text">os</span>{' '}
+              <span className="text-memeos-text-muted">=</span>{' '}
+              <span className="text-memeos-violet">new</span>{' '}
+              <span className="text-memeos-cyan">MemeOS</span>
+              <span className="text-memeos-text-muted">{'({ anthropicKey, privateKey })'}</span>
+              {'\n\n'}
+              <span className="text-memeos-violet">const</span>{' '}
+              <span className="text-memeos-text">empire</span>{' '}
+              <span className="text-memeos-text-muted">=</span>{' '}
+              <span className="text-memeos-violet">await</span>{' '}
+              <span className="text-memeos-text">os</span>
+              <span className="text-memeos-text-muted">.</span>
+              <span className="text-memeos-cyan">launch</span>
+              <span className="text-memeos-text-muted">(</span>
+              <span className="text-memeos-amber">{"'zen samurai frog'"}</span>
+              <span className="text-memeos-text-muted">)</span>
+              {'\n\n'}
+              <span className="text-memeos-text-muted">// empire.token.tokenAddress  — real BSC contract</span>
+              {'\n'}
+              <span className="text-memeos-text-muted">// empire.virality.score      — 0-100 viral score</span>
+              {'\n'}
+              <span className="text-memeos-text-muted">// empire.narrative.tweets    — ready-to-post</span>
+            </code>
+          </pre>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { method: 'os.launch()', desc: 'End-to-end: agents → deploy → virality' },
+              { method: 'os.generate()', desc: 'Agents only, no deploy (preview flows)' },
+              { method: 'os.deploy()', desc: 'Standalone on-chain deploy' },
+              { method: 'os.monitor()', desc: 'Live BSC polling for trades + holders' },
+              { method: 'os.getVirality()', desc: 'Score any concept 0-100' },
+              { method: 'os.getRecentDeploys()', desc: 'Query the global deploy store' },
+            ].map((item) => (
+              <div key={item.method} className="flex items-start gap-2 text-xs">
+                <ChevronRight className="w-3 h-3 text-memeos-cyan mt-0.5 flex-shrink-0" />
+                <div>
+                  <code className="font-mono text-memeos-cyan">{item.method}</code>
+                  <span className="text-memeos-text-muted font-mono ml-2">— {item.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </Section>
 
       {/* === Section 5: CTA === */}

@@ -10,11 +10,19 @@
 </p>
 
 <p align="center">
-  <a href="https://dorahacks.io/hackathon/fourmemeaisprint"><img alt="Four.Meme AI Sprint" src="https://img.shields.io/badge/hackathon-Four.Meme_AI_Sprint-00e5ff?style=flat-square"></a>
+  <a href="https://www.npmjs.com/package/memeos-sdk"><img alt="npm" src="https://img.shields.io/npm/v/memeos-sdk?style=flat-square&color=00e5ff&label=memeos-sdk"></a>
+  <a href="https://dorahacks.io/hackathon/fourmemeaisprint"><img alt="Four.Meme AI Sprint" src="https://img.shields.io/badge/hackathon-Four.Meme_AI_Sprint-8b5cf6?style=flat-square"></a>
   <img alt="Next.js 14" src="https://img.shields.io/badge/Next.js-14-000?style=flat-square&logo=next.js">
   <img alt="Claude" src="https://img.shields.io/badge/Claude-Sonnet-8b5cf6?style=flat-square">
   <img alt="BSC" src="https://img.shields.io/badge/BSC-Mainnet-f59e0b?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-10b981?style=flat-square">
+</p>
+
+<p align="center">
+  <a href="https://meme-oss.vercel.app"><strong>Live Demo</strong></a> ·
+  <a href="https://www.npmjs.com/package/memeos-sdk"><strong>npm</strong></a> ·
+  <a href="./packages/memeos-sdk/README.md"><strong>SDK Docs</strong></a> ·
+  <a href="https://meme-oss.vercel.app/how-it-works"><strong>How it works</strong></a>
 </p>
 
 ---
@@ -44,6 +52,45 @@ MemeOS is not a launcher — it is an operating system for the entire lifecycle 
 - **Six personality modes:** Balanced, Aggressive, Zen, Chaotic, Degen, Aesthetic. Each rewires all five agents' system prompts. Same vibe, wildly different outputs.
 - **Agent voice:** an opt-in Web Speech API integration that makes each agent literally narrate its status transitions during the demo. Each agent has a distinct pitch and rate.
 - **Meme Passport:** a server-rendered PNG card with the token identity, optimized for Twitter/X sharing.
+
+---
+
+## Also Ships as an SDK
+
+The core engine is published to npm as [`memeos-sdk`](https://www.npmjs.com/package/memeos-sdk). Any developer can embed the full agent swarm + on-chain deployment in their own app with a single function call.
+
+```bash
+npm install memeos-sdk
+```
+
+```typescript
+import { MemeOS } from 'memeos-sdk'
+
+const os = new MemeOS({
+  anthropicKey: process.env.ANTHROPIC_API_KEY!,
+  privateKey: process.env.PRIVATE_KEY!,
+  bitqueryKey: process.env.BITQUERY_API_KEY,
+})
+
+const empire = await os.launch('aggressive cyber-duck with glitch energy', {
+  personality: 'chaotic',
+  onAgentUpdate: (event) => console.log(`[${event.agent}]`, event.message),
+})
+
+console.log(empire.token.tokenAddress)   // real BSC contract, ends in 4444
+console.log(empire.virality?.score)      // 0-100 viral potential score
+console.log(empire.narrative.tweets)     // 5 ready-to-post tweets
+```
+
+**SDK highlights:**
+- `os.launch()` — end-to-end, agents → deploy → virality → persistence
+- `os.generate()` — agents only, no deploy (preview flows)
+- `os.deploy()` — standalone on-chain deploy
+- `os.monitor()` — live on-chain polling via BSC RPC
+- `os.getVirality()` — score any generated concept 0-100
+- `os.getRecentDeploys()` — query the global deploy store
+
+**[Full SDK docs →](./packages/memeos-sdk/README.md)**
 
 ---
 
