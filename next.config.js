@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Compile the memeos-sdk workspace package on the fly so we can import from src/
+  // without a pre-build step during local dev.
+  transpilePackages: ['memeos-sdk'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'image.pollinations.ai' },

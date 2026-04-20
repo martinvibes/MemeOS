@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Terminal, ArrowRight, Crown, Sparkles } from 'lucide-react'
-import { findDeploy } from '@/src/storage/deploys'
+import { findDeploy } from 'memeos-sdk'
 import { GlassPanel } from '@/components/ui/glass-panel'
 import { LivePanels } from './live-panels'
 import { EmpireActions, TweetCard, CopyAddressButton } from './client-bits'

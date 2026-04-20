@@ -1,5 +1,4 @@
-import { BitqueryClient } from '@/src/bitquery/client'
-import { TOP_TOKENS_BY_VOLUME } from '@/src/bitquery/queries'
+import { BitqueryClient, TOP_TOKENS_BY_VOLUME } from 'memeos-sdk'
 
 export const runtime = 'nodejs'
 

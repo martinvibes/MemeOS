@@ -1,0 +1,78 @@
+{
+  "name": "memeos-sdk",
+  "version": "0.1.0",
+  "description": "The autonomous meme coin operating system. Launch real tokens on BSC via four.meme from a single vibe prompt.",
+  "keywords": [
+    "memeos",
+    "meme-coin",
+    "four.meme",
+    "bsc",
+    "ai-agents",
+    "bitquery",
+    "claude"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "import": "./dist/types.js",
+      "default": "./dist/types.js"
+    },
+    "./personality/modes": {
+      "types": "./src/personality/modes.ts",
+      "import": "./dist/personality/modes.js",
+      "default": "./dist/personality/modes.js"
+    },
+    "./bsc/rpc": {
+      "types": "./src/bsc/rpc.ts",
+      "import": "./dist/bsc/rpc.js",
+      "default": "./dist/bsc/rpc.js"
+    },
+    "./bitquery/client": {
+      "types": "./src/bitquery/client.ts",
+      "import": "./dist/bitquery/client.js",
+      "default": "./dist/bitquery/client.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@four-meme/four-meme-ai": "^1.0.8",
+    "@upstash/redis": "^1.37.0",
+    "viem": "^2.21.0",
+    "ws": "^8.20.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": { "optional": true }
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.18.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

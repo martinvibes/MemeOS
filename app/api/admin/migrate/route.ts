@@ -1,4 +1,4 @@
-import { migrateFileToRedis, getStorageBackend } from '@/src/storage/deploys'
+import { migrateFileToRedis, getStorageBackend } from 'memeos-sdk'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'

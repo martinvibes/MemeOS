@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import type { AgentEvent, Trade, PriceUpdate, Holder, ConceptBrief, NarrativePackage, VisualAssets, MarketIntel, DeployResult } from '@/src/types'
-import type { PersonalityMode } from '@/src/personality/modes'
+import type { AgentEvent, Trade, PriceUpdate, Holder, ConceptBrief, NarrativePackage, VisualAssets, MarketIntel, DeployResult } from 'memeos-sdk/types'
+import type { PersonalityMode } from 'memeos-sdk/personality/modes'
 
 export type AppPhase = 'landing' | 'building' | 'review' | 'deploying' | 'deployed' | 'empire'
 

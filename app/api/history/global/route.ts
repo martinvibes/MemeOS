@@ -1,7 +1,10 @@
 import { privateKeyToAccount } from 'viem/accounts'
-import { BitqueryClient } from '@/src/bitquery/client'
-import { TOKENS_CREATED_BY_DEV } from '@/src/bitquery/queries'
-import { readDeploys, type StoredDeploy } from '@/src/storage/deploys'
+import {
+  BitqueryClient,
+  TOKENS_CREATED_BY_DEV,
+  readDeploys,
+  type StoredDeploy,
+} from 'memeos-sdk'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'

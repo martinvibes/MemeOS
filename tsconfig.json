@@ -15,9 +15,17 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "memeos-sdk": ["./packages/memeos-sdk/src/index.ts"],
+      "memeos-sdk/*": ["./packages/memeos-sdk/src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "packages/memeos-sdk/src/**/*"
+  ],
+  "exclude": ["node_modules", "packages/*/dist", "packages/*/node_modules"]
 }

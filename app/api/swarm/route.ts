@@ -1,5 +1,4 @@
-import { MemeOS } from '@/src/orchestrator'
-import type { AgentEvent } from '@/src/types'
+import { MemeOS, type AgentEvent } from 'memeos-sdk'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300

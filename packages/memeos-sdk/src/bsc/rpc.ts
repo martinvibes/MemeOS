@@ -1,4 +1,4 @@
-import { createPublicClient, http, parseAbi, fallback, type Address } from 'viem'
+import { createPublicClient, http, parseAbi, fallback, type Address, type PublicClient } from 'viem'
 import { bsc } from 'viem/chains'
 
 export const FOUR_MEME_PROXY: Address = '0x5c952063c7fc8610FFDB798152D69F0B9550762b'
@@ -15,7 +15,7 @@ const RPC_ENDPOINTS = [
   'https://binance.llamarpc.com',
 ]
 
-export const bscClient = createPublicClient({
+export const bscClient: PublicClient = createPublicClient({
   chain: bsc,
   transport: fallback(RPC_ENDPOINTS.map((url) => http(url, { retryCount: 1, timeout: 8000 }))),
 })

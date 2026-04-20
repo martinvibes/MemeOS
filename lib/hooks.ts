@@ -2,7 +2,7 @@
 
 import { useCallback, useRef } from 'react'
 import { useStore } from './store'
-import type { AgentEvent, DeployResult } from '@/src/types'
+import type { AgentEvent, DeployResult } from 'memeos-sdk/types'
 import { saveDeployedToken } from './history'
 import { speak, VOICE_PROFILES, isVoiceEnabled } from './voice'
 

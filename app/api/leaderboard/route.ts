@@ -1,5 +1,4 @@
-import { readDeploys, type StoredDeploy } from '@/src/storage/deploys'
-import { getBondingCurve } from '@/src/bsc/rpc'
+import { readDeploys, getBondingCurve, type StoredDeploy } from 'memeos-sdk'
 import type { Address } from 'viem'
 
 export const runtime = 'nodejs'

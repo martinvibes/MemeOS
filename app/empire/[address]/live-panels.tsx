@@ -14,7 +14,7 @@ import {
 import { GlassPanel } from '@/components/ui/glass-panel'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { formatAddress, formatUSD, timeAgo } from '@/lib/utils'
-import type { Trade, PriceUpdate, Holder } from '@/src/types'
+import type { Trade, PriceUpdate, Holder } from 'memeos-sdk/types'
 
 interface LivePanelsProps {
   tokenAddress: string

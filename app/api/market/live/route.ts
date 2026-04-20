@@ -1,4 +1,4 @@
-import { getBondingCurve, getRecentTrades, getTopHolders, type TradeLog } from '@/src/bsc/rpc'
+import { getBondingCurve, getRecentTrades, getTopHolders, type TradeLog } from 'memeos-sdk'
 import type { Address } from 'viem'
 
 export const runtime = 'nodejs'

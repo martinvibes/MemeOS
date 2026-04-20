@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Flame, Leaf, Zap, Skull, Palette, CircleDot } from 'lucide-react'
 import { useStore } from '@/lib/store'
-import { PERSONALITY_MODES, type PersonalityMode } from '@/src/personality/modes'
+import { PERSONALITY_MODES, type PersonalityMode } from 'memeos-sdk/personality/modes'
 
 const MODE_ICONS: Record<PersonalityMode, typeof Flame> = {
   balanced: CircleDot,

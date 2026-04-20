@@ -2,9 +2,7 @@ import { writeFile } from 'fs/promises'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { randomUUID } from 'crypto'
-import { MemeOS } from '@/src/orchestrator'
-import { writeDeploy } from '@/src/storage/deploys'
-import type { AgentEvent } from '@/src/types'
+import { MemeOS, writeDeploy, type AgentEvent } from 'memeos-sdk'
 
 export const runtime = 'nodejs'
 export const maxDuration = 120

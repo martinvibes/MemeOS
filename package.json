@@ -2,10 +2,14 @@
   "name": "memeos",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "sdk:build": "npm run build -w memeos-sdk"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
@@ -17,6 +21,7 @@
     "framer-motion": "^11.15.0",
     "lightweight-charts": "^4.2.0",
     "lucide-react": "^1.8.0",
+    "memeos-sdk": "*",
     "next": "^14.2.0",
     "postprocessing": "^6.39.1",
     "qrcode": "^1.5.4",
