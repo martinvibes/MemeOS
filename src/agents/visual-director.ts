@@ -1,5 +1,5 @@
 import { BaseAgent } from './base'
-import { generateImage, type GeneratedImage } from '../image/generator'
+import { type GeneratedImage } from '../image/generator'
 import type { AgentEvent, ConceptBrief, NarrativePackage, VisualAssets } from '../types'
 import type { PersonalityMode } from '../personality/modes'
 
@@ -78,7 +78,9 @@ Generate an image prompt and style description for this token's logo/character a
       styleDescription = concept.visualDirection
     }
 
-    // Use preliminary images if both are ready (generated in parallel from start)
+    // Use URL-only preliminary images if provided (browser loads them on demand).
+    // Server never downloads — no timeout risk on serverless.
+    // The deploy route downloads just-in-time via ensureLocalImage() when needed.
     if (prelimImage && secondImage) {
       this.emit('completed', 'Visual identity complete (2 variants)', { imageUrl: prelimImage.url })
       return {
@@ -86,52 +88,32 @@ Generate an image prompt and style description for this token's logo/character a
         imagePrompt,
         styleDescription,
         coherenceScore: 0,
-        localPath: prelimImage.localPath,
+        localPath: prelimImage.localPath || undefined,
         allImageUrls: [prelimImage.url, secondImage.url],
-        allLocalPaths: [prelimImage.localPath, secondImage.localPath],
+        allLocalPaths: [prelimImage.localPath, secondImage.localPath].filter(Boolean) as string[],
       }
     }
 
-    // If only one is ready, generate the missing one now
-    if (prelimImage && !secondImage) {
-      this.emit('running', 'Generating second variant...')
-      const second = await generateImage({
-        prompt: imagePrompt,
-        width: 512,
-        height: 512,
-        model: 'flux',
-        seed: 2000,
-      })
-      this.emit('completed', 'Visual identity complete (2 variants)', { imageUrl: prelimImage.url })
-      return {
-        imageUrl: prelimImage.url,
-        imagePrompt,
-        styleDescription,
-        coherenceScore: 0,
-        localPath: prelimImage.localPath,
-        allImageUrls: [prelimImage.url, second.url],
-        allLocalPaths: [prelimImage.localPath, second.localPath],
-      }
-    }
+    // Fallback: no preliminary images passed — build URL-only variants from imagePrompt
+    this.emit('running', 'Preparing character art variants...')
 
-    // No preliminary images available — generate both now
-    this.emit('running', 'Generating character art (2 variants)...')
+    const encoded = encodeURIComponent(imagePrompt)
+    const buildUrl = (seed: number) =>
+      `https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&model=flux&seed=${seed}&nologo=true`
 
-    const [image1, image2] = await Promise.all([
-      generateImage({ prompt: imagePrompt, width: 512, height: 512, model: 'flux', seed: 1000 }),
-      generateImage({ prompt: imagePrompt, width: 512, height: 512, model: 'flux', seed: 2000 }),
-    ])
+    const url1 = buildUrl(1000)
+    const url2 = buildUrl(2000)
 
-    this.emit('completed', 'Visual identity complete (2 variants)', { imageUrl: image1.url })
+    this.emit('completed', 'Visual identity complete (2 variants)', { imageUrl: url1 })
 
     return {
-      imageUrl: image1.url,
+      imageUrl: url1,
       imagePrompt,
       styleDescription,
       coherenceScore: 0,
-      localPath: image1.localPath,
-      allImageUrls: [image1.url, image2.url],
-      allLocalPaths: [image1.localPath, image2.localPath],
+      localPath: undefined,
+      allImageUrls: [url1, url2],
+      allLocalPaths: [],
     }
   }
 

@@ -3,7 +3,6 @@ import { MarketAnalyst } from './agents/market-analyst'
 import { NarrativeDesigner } from './agents/narrative-designer'
 import { VisualDirector } from './agents/visual-director'
 import { LaunchCommander } from './agents/launch-commander'
-import { generateImage } from './image/generator'
 import type {
   LaunchOptions, AgentEvent, ConceptBrief, MarketIntel,
   NarrativePackage, VisualAssets, DeployResult,
@@ -50,36 +49,27 @@ export class MemeOS {
   }
 
   async generate(vibePrompt: string, onAgentUpdate?: (event: AgentEvent) => void, personality: PersonalityMode = 'balanced'): Promise<GenerateResult> {
-    // === Start BOTH preliminary images IMMEDIATELY from the vibe prompt ===
-    // Runs in parallel with ALL agents so both are ready by review time
+    // === Pre-build image URLs IMMEDIATELY from the vibe prompt ===
+    // Pollinations.ai generates on-demand when the browser requests the URL.
+    // No server-side download here = no timeout risk on serverless.
+    // The browser loads images during the review phase; deploy downloads JIT.
     onAgentUpdate?.({
       agent: 'visual-director',
       status: 'running',
-      message: 'Pre-generating 2 character art variants from vibe...',
+      message: 'Preparing image variants from vibe...',
       timestamp: Date.now(),
     })
 
     const prelimImagePrompt = `${vibePrompt}, high quality digital art, token logo style, centered character on dark background, bold vibrant colors, icon style, no text`
+    const prelimEncoded = encodeURIComponent(prelimImagePrompt)
+    const buildUrl = (seed: number) =>
+      `https://image.pollinations.ai/prompt/${prelimEncoded}?width=512&height=512&model=flux&seed=${seed}&nologo=true`
 
-    // Both images generate in parallel from the start
-    const [prelimImagePromise, secondImagePromise] = [
-      generateImage({
-        prompt: prelimImagePrompt,
-        width: 512,
-        height: 512,
-        model: 'flux',
-        seed: 1000,
-      }).catch(() => null),
-      generateImage({
-        prompt: prelimImagePrompt,
-        width: 512,
-        height: 512,
-        model: 'flux',
-        seed: 2000,
-      }).catch(() => null),
-    ]
+    // Fast URL-only "images" — no actual download yet
+    const prelimImage = { url: buildUrl(1000), localPath: '', prompt: prelimImagePrompt }
+    const secondImage = { url: buildUrl(2000), localPath: '', prompt: prelimImagePrompt }
 
-    // --- Phase 1: Market Analyst (runs while images are generating) ---
+    // --- Phase 1: Market Analyst ---
     const marketAnalyst = new MarketAnalyst(
       this.anthropicKey,
       this.bitqueryKey,
@@ -108,10 +98,7 @@ export class MemeOS {
       personality,
     )
 
-    // Wait for both preliminary images to be ready
-    const [prelimImage, secondImage] = await Promise.all([prelimImagePromise, secondImagePromise])
-
-    // Visual Director uses the preliminary images (both already generated)
+    // Visual Director builds the refined prompt + uses the URL-only preliminary images
     const visualsPromise = visualDirector.generateVisuals(concept, prelimImage, secondImage)
     let narrative = await narrativeDesigner.run({ concept, marketIntel })
     const visuals = await visualsPromise
