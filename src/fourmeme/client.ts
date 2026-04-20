@@ -100,12 +100,23 @@ export class FourMemeClient {
       fourmemeCmd = `npx --yes @four-meme/four-meme-ai`
     }
 
-    // Write a shell script to avoid argument escaping issues entirely
+    // Write a shell script to avoid argument escaping issues entirely.
+    // Env setup handles Vercel serverless quirks:
+    //   - HOME=/tmp because /home/sbx_user* doesn't exist
+    //   - NPM_CONFIG_CACHE=/tmp/.npm because default cache path is unwritable
+    //   - PATH includes local node_modules/.bin so nested `npx tsx` resolves locally
+    const localBinPath = join(projectRoot, 'node_modules', '.bin')
     const scriptPath = join(tmpdir(), `memeos-deploy-${randomUUID()}.sh`)
     const scriptContent = [
       '#!/bin/bash',
+      `export HOME="/tmp"`,
+      `export NPM_CONFIG_CACHE="/tmp/.npm"`,
+      `export NPM_CONFIG_UPDATE_NOTIFIER="false"`,
+      `export NPM_CONFIG_FUND="false"`,
+      `export PATH="${localBinPath}:$PATH"`,
       `export PRIVATE_KEY="${this.env.PRIVATE_KEY}"`,
       `export BSC_RPC_URL="${this.env.BSC_RPC_URL}"`,
+      `mkdir -p "/tmp/.npm" 2>/dev/null`,
       `${fourmemeCmd} create-instant \\`,
       `  --image="${params.imagePath}" \\`,
       `  --name="${cleanName}" \\`,
@@ -116,6 +127,7 @@ export class FourMemeClient {
 
     await writeFile(scriptPath, scriptContent, { mode: 0o755 })
     console.log('[four.meme] Using binary:', fourmemeCmd)
+    console.log('[four.meme] Local bin path:', localBinPath)
 
     try {
       const { stdout, stderr } = await this.runCommand(['bash', scriptPath])
