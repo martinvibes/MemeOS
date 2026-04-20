@@ -37,7 +37,7 @@ export function DeployHistory() {
 
     const fetchGlobalHistory = async () => {
       try {
-        const res = await fetch('/api/history/global')
+        const res = await fetch('/api/history/global', { cache: 'no-store' })
         const data = await res.json()
         if (cancelled) return
         const all = data.tokens || []

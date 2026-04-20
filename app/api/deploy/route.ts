@@ -87,23 +87,31 @@ export async function POST(request: Request) {
           },
         })
 
-        // Persist deploy to global store (fire and forget)
-        writeDeploy({
-          name: deployResult.name,
-          symbol: deployResult.symbol,
-          tokenAddress: deployResult.tokenAddress,
-          txHash: deployResult.txHash,
-          fourMemeUrl: deployResult.fourMemeUrl,
-          imageUrl: (resolvedVisuals as any)?.imageUrl,
-          tagline: (narrative as any)?.taglines?.[0],
-          lore: (narrative as any)?.lore,
-          tweets: (narrative as any)?.tweets,
-          personality: (concept as any)?.personality,
-          vibePrompt,
-          viralityScore: virality?.score,
-          viralityBreakdown: virality?.breakdown,
-          deployedAt: new Date().toISOString(),
-        }).catch((e) => console.error('[Deploy] Failed to persist:', e))
+        // Persist deploy to global store BEFORE sending the success event.
+        // On Vercel serverless the function terminates as soon as the stream closes,
+        // so fire-and-forget writes get cancelled. Await to guarantee the write lands.
+        try {
+          await writeDeploy({
+            name: deployResult.name,
+            symbol: deployResult.symbol,
+            tokenAddress: deployResult.tokenAddress,
+            txHash: deployResult.txHash,
+            fourMemeUrl: deployResult.fourMemeUrl,
+            imageUrl: (resolvedVisuals as any)?.imageUrl,
+            tagline: (narrative as any)?.taglines?.[0],
+            lore: (narrative as any)?.lore,
+            tweets: (narrative as any)?.tweets,
+            personality: (concept as any)?.personality,
+            vibePrompt,
+            viralityScore: virality?.score,
+            viralityBreakdown: virality?.breakdown,
+            deployedAt: new Date().toISOString(),
+          })
+          console.log('[Deploy] Persisted to global store:', deployResult.tokenAddress)
+        } catch (e) {
+          console.error('[Deploy] Failed to persist:', e)
+          // Don't fail the deploy — the token IS on-chain, the feed is just a nice-to-have
+        }
 
         send({ type: 'deployed', token: deployResult })
       } catch (error) {
