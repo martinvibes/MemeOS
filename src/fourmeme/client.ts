@@ -81,13 +81,32 @@ export class FourMemeClient {
     const cleanName = this.sanitize(params.name)
     const cleanShortName = params.shortName.replace(/[^\w]/g, '').trim().toUpperCase()
 
+    // Resolve the fourmeme binary by full path (works on Vercel where npx can't find it).
+    // Fallback chain:
+    //   1. Direct bin symlink: node_modules/.bin/fourmeme
+    //   2. Package bin file: node_modules/@four-meme/four-meme-ai/bin/fourmeme.cjs
+    const { existsSync } = await import('fs')
+    const projectRoot = process.cwd()
+    const binSymlink = join(projectRoot, 'node_modules', '.bin', 'fourmeme')
+    const binDirect = join(projectRoot, 'node_modules', '@four-meme', 'four-meme-ai', 'bin', 'fourmeme.cjs')
+
+    let fourmemeCmd: string
+    if (existsSync(binSymlink)) {
+      fourmemeCmd = binSymlink
+    } else if (existsSync(binDirect)) {
+      fourmemeCmd = `node ${binDirect}`
+    } else {
+      // Last resort — shouldn't happen if outputFileTracingIncludes is correct
+      fourmemeCmd = `npx --yes @four-meme/four-meme-ai`
+    }
+
     // Write a shell script to avoid argument escaping issues entirely
     const scriptPath = join(tmpdir(), `memeos-deploy-${randomUUID()}.sh`)
     const scriptContent = [
       '#!/bin/bash',
       `export PRIVATE_KEY="${this.env.PRIVATE_KEY}"`,
       `export BSC_RPC_URL="${this.env.BSC_RPC_URL}"`,
-      `npx fourmeme create-instant \\`,
+      `${fourmemeCmd} create-instant \\`,
       `  --image="${params.imagePath}" \\`,
       `  --name="${cleanName}" \\`,
       `  --short-name="${cleanShortName}" \\`,
@@ -96,6 +115,7 @@ export class FourMemeClient {
     ].join('\n')
 
     await writeFile(scriptPath, scriptContent, { mode: 0o755 })
+    console.log('[four.meme] Using binary:', fourmemeCmd)
 
     try {
       const { stdout, stderr } = await this.runCommand(['bash', scriptPath])
