@@ -61,7 +61,7 @@ export abstract class BaseAgent {
         let fullResponse = ''
 
         const stream = this.client.messages.stream({
-          model: 'claude-3-haiku-20240307',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 4096,
           system: [{ type: 'text', text: augmentedSystemPrompt, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userPrompt }],
