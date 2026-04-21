@@ -63,7 +63,7 @@ Naming patterns: ${market?.namingPatterns?.join(', ') || 'unknown'}
 Score this concept for viral potential.`
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
